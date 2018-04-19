@@ -1,6 +1,6 @@
 """db.py is the cases plugin database library for all task plugins to use"""
 # coding=utf-8
-from datetime import datetime
+import udatetime as datetime
 from app import db
 from yaml_info.yamlinfo import YamlInfo
 
@@ -8,7 +8,6 @@ from yaml_info.yamlinfo import YamlInfo
 class Cases(db.Model):
     """Case data default table for aucr."""
 
-    # TODO add all the possible fields we should be using
     __tablename__ = 'cases'
     id = db.Column(db.Integer, primary_key=True)
     case_name = db.Column(db.String(128), index=True)
@@ -37,7 +36,7 @@ class Detection(db.Model):
 
 def insert_initial_detection_values(*args, **kwargs):
     """Insert Task category default database values from a yaml template file."""
-    run = YamlInfo("app/plugins/tasks/category.yaml", "none", "none")
+    run = YamlInfo("app/plugins/Horatio/detection_methods.yml", "none", "none")
     detection_data = run.get()
     for items in detection_data:
         new_detection_table_row = Detection(detection_method=items)
