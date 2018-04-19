@@ -8,7 +8,6 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Le
 from flask_babel import _, lazy_gettext as _l
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
 
-# AVAILABLE_CHOICES = [('1', 'User Reported'), ('2', 'AV')]
 DEFAULT_CHOICES = []
 
 

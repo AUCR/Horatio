@@ -14,6 +14,6 @@ count = 0
 items_available_choices_list = []
 for items in detection_data:
     count += 1
-    new_list = (count, items)
+    new_list = (str(count), items)
     items_available_choices_list.append(new_list)
 AVAILABLE_CHOICES = items_available_choices_list
