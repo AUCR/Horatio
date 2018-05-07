@@ -1,10 +1,42 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-        <div class="row">
-            <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
-            </div>
-        </div>
+    <style>
+    .demo-list-action {
+      width: 300px;
+    }
+    </style>
+    <main class="mdl-layout__content">
+        <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">{{ _('Create a Task') }}</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    {{ _('Create a new Case.') }}
+                </div>
+                <div class="mdl-card__actions mdl-card--border ">
+                    <form class="form" method="post" role="form">
+                        {{ form.hidden_tag() }}
+                        {{ wtf.form_field(form.subject) }}
+                        {{ wtf.form_field(form.description) }}
+                        {{ wtf.form_field(form.detection_method) }}
+                        <div class="demo-list-action mdl-list">
+                        {% for items in groups %}
+                            <div class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                  <span>{{ items.group_name }}</span>
+                                </span>
+                            </div>
+                        {% endfor %}
+                        </div>
+                        {{ wtf.form_field(form.group_access) }}
+
+                        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            {{ _('Create') }}
+                        </button>
+                    </form>
+                </div>
+        </section>
+    </main>
 {% endblock %}

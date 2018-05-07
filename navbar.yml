@@ -1,3 +1,4 @@
-user:
+admin:
   'Cases': 'case.cases'
   'Case Creation': 'case.create'
+
