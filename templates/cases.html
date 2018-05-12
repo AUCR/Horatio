@@ -16,16 +16,19 @@
                 <table class="mdl-data-table mdl-js-data-table">
                     <thead>
                         <tr>
-                            <th class="mdl-data-table__cell--non-numeric">Task Plugins</th>
-                            <th class="mdl-data-table__cell--non-numeric">Plugin Info</th>
-                            <th>Link</th>
+                            <th class="mdl-data-table__cell--non-numeric">Case Number</th>
+                            <th class="mdl-data-table__cell--non-numeric">Case Description</th>
+                            <th class="mdl-data-table__cell--non-numeric">Case Subject</th>
+
                         </tr>
                     </thead>
                     <tbody>
-                    {% for items in task_info %}
+                    {% for items in case_list %}
                         <tr>
-                            <td class="mdl-data-table__cell--non-numeric">{{ items.task_name }}</td>
+                            <td class="mdl-data-table__cell--non-numeric">{{ items.id }}</td>
                             <td>{{ items.description }}</td>
+                            <td>{{ items.subject }}</td>
+
                             <td></td>
                         </tr>
                     {% endfor %}

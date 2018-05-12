@@ -19,8 +19,9 @@ def cases_plugin_route():
     # TODO show current cases in the database
     current_user_groups = get_groups()
     page = request.args.get('page', 1, type=int)
+    case_list = Cases.query.all()
     return render_template('cases.html', title='Cases Plugin',
-                           page=page, render_current_user_groups=current_user_groups)
+                           page=page, render_current_user_groups=current_user_groups, case_list=case_list)
 
 
 @tasks_page.route('/create', methods=['GET', 'POST'])
