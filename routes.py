@@ -7,7 +7,7 @@ from app.plugins.tasks.routes import tasks_page
 from app.plugins.Horatio.forms import CreateCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
 from app.plugins.Horatio.models import Cases
-from app.plugins.auth.utils import get_group_permission_navbar
+
 
 cases = Blueprint('cases', __name__, template_folder='templates')
 
@@ -20,7 +20,7 @@ def cases_plugin_route():
     page = request.args.get('page', 1, type=int)
     case_list = Cases.query.all()
     return render_template('cases.html', title='Cases Plugin',
-                           page=page, current_user_navbar=get_group_permission_navbar(), case_list=case_list)
+                           page=page, case_list=case_list)
 
 
 @tasks_page.route('/create', methods=['GET', 'POST'])
@@ -38,13 +38,13 @@ def create_case_route():
                     detection_method_selection = items
             new_case = Cases(description=form.description.data, subject=form.subject.data,
                              created_by=current_user.id, case_status="New Issue",
-                             detection_method=detection_method_selection[1], group_access=form.group_access.data,
-                             current_user_navbar=get_group_permission_navbar())
+                             detection_method=detection_method_selection[1], group_access=form.group_access.data
+                             )
             db.session.add(new_case)
             db.session.commit()
             flash("The case has been created.")
             return redirect(url_for('tasks.cases_plugin_route'))
 
     return render_template('create_case.html', title='Create Case', form=form, groups=group_info,
-                           current_user_navbar=get_group_permission_navbar())
+                           )
 

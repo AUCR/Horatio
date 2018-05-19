@@ -1,4 +1,6 @@
-user:
-  'Cases': 'tasks.cases_plugin_route'
-  'Case Creation': 'tasks.create_case_route'
+tasks:
+  user: [CreateCase: 'tasks.create_case_route']
 
+reports:
+  user: [
+    Cases: 'tasks.cases_plugin_route']
