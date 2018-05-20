@@ -2,40 +2,62 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <style>
+<style>
     .demo-list-action {
       width: 300px;
     }
-    </style>
-    <main class="mdl-layout__content">
-        <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">{{ _('Create a Task') }}</h2>
-                </div>
-                <div class="mdl-card__supporting-text">
-                    {{ _('Create a new Case.') }}
-                </div>
-                <div class="mdl-card__actions mdl-card--border ">
-                    <form class="form" method="post" role="form">
-                        {{ form.hidden_tag() }}
-                        {{ wtf.form_field(form.subject) }}
-                        {{ wtf.form_field(form.description) }}
-                        {{ wtf.form_field(form.detection_method) }}
-                        <div class="demo-list-action mdl-list">
-                        {% for items in groups %}
-                            <div class="mdl-list__item">
-                                <span class="mdl-list__item-primary-content">
-                                  <span>{{ items.group_name }}</span>
-                                </span>
-                            </div>
-                        {% endfor %}
+
+
+</style>
+<main class="mdl-layout__content">
+    <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">{{ _('Create a Task') }}</h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+            {{ _('Create a new Case.') }}
+        </div>
+        <div class="mdl-card__actions mdl-card--border ">
+            <form class="form" method="post" role="form">
+                {{ form.hidden_tag() }}
+                {{ wtf.form_field(form.subject) }}
+                {{ wtf.form_field(form.description) }}
+                {{ wtf.form_field(form.detection_method) }}
+                <!--<div class="demo-list-action mdl-list">-->
+                    <!--{% for items in groups %}-->
+                    <!--<div class="mdl-list__item">-->
+                                <!--<span class="mdl-list__item-primary-content">-->
+                                  <!--<span>{{ items.group_name }}</span>-->
+                                <!--</span>-->
+                    <!--</div>-->
+                    <!--{% endfor %}-->
+                <!--</div>-->
+                <!--{{ wtf.form_field(form.group_access) }}-->
+                <!--<div class="mdl-color&#45;&#45;whitemdl-shadow&#45;&#45;2dp mdl-cell mdl-cell&#45;&#45;12-col mdl-grid">-->
+                    <div class="mdl-cell mdl-cell--2-col">
+                        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label"
+                             style="width:100px">
+                            <select id="data-val" name="group_name"
+                                    class="required mdl-selectfield__select" required>
+                                <option value=""></option>
+
+                                {% for items in groups %}
+                                <option value={{ items.group_name}}>{{ items.group_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="data-val" class="mdl-selectfield__label">Group</label>
+                            <span class="mdl-selectfield__error">Input is not a empty!</span>
                         </div>
-                        {{ wtf.form_field(form.group_access) }}
-                        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                            {{ _('Create') }}
-                        </button>
-                    </form>
-                </div>
-        </section>
-    </main>
+                    </div>
+                <!--</div>-->
+
+
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                        value=data-val.value>
+                    {{ _('Create') }}
+                </button>
+            </form>
+        </div>
+    </section>
+</main>
 {% endblock %}
