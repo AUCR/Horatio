@@ -18,42 +18,26 @@
             {{ _('Create a new Case.') }}
         </div>
         <div class="mdl-card__actions mdl-card--border ">
-            <form class="form" method="post" role="form" enctype="multipart/form-data">
+            <form class="form" method="post" role="form">
                 {{ form.hidden_tag() }}
-                {{ wtf.form_field(form.subject) }}
-                {{ wtf.form_field(form.description) }}
-                {{ wtf.form_field(form.detection_method) }}
-                <!--<div class="demo-list-action mdl-list">-->
-                    <!--{% for items in groups %}-->
-                    <!--<div class="mdl-list__item">-->
-                                <!--<span class="mdl-list__item-primary-content">-->
-                                  <!--<span>{{ items.group_name }}</span>-->
-                                <!--</span>-->
-                    <!--</div>-->
-                    <!--{% endfor %}-->
-                <!--</div>-->
-                <!--{{ wtf.form_field(form.group_access) }}-->
-                <!--<div class="mdl-color&#45;&#45;whitemdl-shadow&#45;&#45;2dp mdl-cell mdl-cell&#45;&#45;12-col mdl-grid">-->
-                    <div class="mdl-cell mdl-cell--2-col">
-                        <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label"
-                             style="width:100px">
-                            <select id="data-val" name="group_name"
-                                    class="required mdl-selectfield__select" required>
-                                <option value=""></option>
-                                {% for items in groups %}
-                                    <option type=text name=group_access_value value={{ items.group_name}}>
-                                        {{ items.group_name }}
-                                    </option>
-                                {% endfor %}
-
-                            </select>
-                            <label for="data-val" class="mdl-selectfield__label">{{ _('Access Level') }} </label>
-                            <span class="mdl-selectfield__error">Input is not a empty!</span>
-                        </div>
+                {% include "subtemplates/_subject.html" %}
+                <div class="mdl-layout-spacer"></div>
+                {% include "subtemplates/_description.html" %}
+                <div class="mdl-layout-spacer"></div>
+                {% include "subtemplates/_detection_method.html" %}
+                <div class="mdl-cell mdl-cell">
+                    <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+                        <select id="data-val" name="group_name" class="required mdl-selectfield__select" required>
+                            <option value=""></option>
+                            {% include "subtemplates/_group_name_form.html" %}
+                        </select>
+                        <label for="data-val" class="mdl-selectfield__label">{{ _('Group Access Level') }}</label>
+                        <span class="mdl-selectfield__error">Input is not a empty!</span>
                     </div>
-                <!--</div>-->
+                </div>
                 {% include "upload_file.html" %}
                 <!--</div>-->
+                <div class="mdl-layout-spacer"></div>
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                         value=data-val.value>
                     {{ _('Create') }}

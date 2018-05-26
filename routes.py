@@ -53,5 +53,5 @@ def create_case_route():
             flash("The case has been created.")
             return redirect(url_for('tasks.cases_plugin_route'))
     form = CreateCase(request.form)
-    return render_template('create_case.html', title='Create Case', form=form, groups=group_info)
+    return render_template('create_case.html', title='Create Case', form=form, groups=group_info, detection_method=AVAILABLE_CHOICES)
 

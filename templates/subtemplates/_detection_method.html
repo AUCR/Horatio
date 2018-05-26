@@ -1,0 +1,12 @@
+<div class="mdl-cell mdl-cell">
+    <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+        <select id="detection-method" name="DetectionMethod" class="required mdl-selectfield__select" required>
+            <option value=""></option>
+        {% for items in detection_method %}
+            <option type=text name=group_access_value value={{ items[0] }}>{{ items[1] }}</option>
+        {% endfor %}
+        </select>
+        <label for="detection-method" class="mdl-selectfield__label">{{ _('Detection Method') }}</label>
+        <span class="mdl-selectfield__error">Input is not a empty!</span>
+    </div>
+</div>
