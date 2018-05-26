@@ -38,7 +38,8 @@ def create_case_route():
                     detection_method_selection = items
             new_case = Cases(description=form.description.data, subject=form.subject.data,
                              created_by=current_user.id, case_status="New Issue",
-                             detection_method=detection_method_selection[1], group_access=form.group_access.data
+                             detection_method=detection_method_selection[1], group_access=form.group_access.data,
+                             detection_methods=AVAILABLE_CHOICES
                              )
             db.session.add(new_case)
             db.session.commit()

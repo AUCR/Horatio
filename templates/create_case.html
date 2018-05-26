@@ -23,36 +23,13 @@
                 {{ wtf.form_field(form.subject) }}
                 {{ wtf.form_field(form.description) }}
                 {{ wtf.form_field(form.detection_method) }}
-                <!--<div class="demo-list-action mdl-list">-->
-                    <!--{% for items in groups %}-->
-                    <!--<div class="mdl-list__item">-->
-                                <!--<span class="mdl-list__item-primary-content">-->
-                                  <!--<span>{{ items.group_name }}</span>-->
-                                <!--</span>-->
-                    <!--</div>-->
-                    <!--{% endfor %}-->
-                <!--</div>-->
-                <!--{{ wtf.form_field(form.group_access) }}-->
-                <!--<div class="mdl-color&#45;&#45;whitemdl-shadow&#45;&#45;2dp mdl-cell mdl-cell&#45;&#45;12-col mdl-grid">-->
-                {% with iterable_thing=groups, dropdown_topic="group_name" %}
+                {% with iterable_thing=detection_methods, dropdown_topic="detection_method", dropdown_title="Method" %}
+                {% include "dropdown.html" %}
+                {% endwith %}
+                {% with iterable_thing=groups, dropdown_topic="group_name", dropdown_title="Group" %}
                     {% include "dropdown.html" %}
                 {% endwith %}
-                    <!--<div class="mdl-cell mdl-cell&#45;&#45;2-col">-->
-                        <!--<div class="mdl-selectfield mdl-js-selectfield mdl-selectfield&#45;&#45;floating-label"-->
-                             <!--style="width:100px">-->
-                            <!--<select id="data-val" name="group_name"-->
-                                    <!--class="required mdl-selectfield__select" required>-->
-                                <!--<option value=""></option>-->
 
-                                <!--{% for items in groups %}-->
-                                <!--<option value={{ items.group_name}}>{{ items.group_name }}</option>-->
-                                <!--{% endfor %}-->
-                            <!--</select>-->
-                            <!--<label for="data-val" class="mdl-selectfield__label">Group</label>-->
-                            <!--<span class="mdl-selectfield__error">Input is not a empty!</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
 
 
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
