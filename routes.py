@@ -31,23 +31,19 @@ def create_case_route():
     group_info = Groups.query.all()
     if request.method == 'POST':
         form = CreateCase(request.form)
-        if "group_name" in request.values:
-            group_access_value = request.values["group_name"]
-            group_access_value_id = Groups.query.filter_by(group_name=group_access_value).first()
-            form.group_access = group_access_value_id.id
         form.detection_method.choices = AVAILABLE_CHOICES
         if form.validate():
             file = request.files['file']
             if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file_hash = get_upload_file_hash(file)
+                secure_filename(file.filename)
+                get_upload_file_hash(file)
             detection_method_selection = None
             for items in AVAILABLE_CHOICES:
                 if items[0] == form.detection_method.data[0]:
                     detection_method_selection = items
             new_case = Cases(description=form.description.data, subject=form.subject.data,
                              created_by=current_user.id, case_status="New Issue",
-                             detection_method=detection_method_selection[1], group_access=group_access_value_id.id)
+                             detection_method=detection_method_selection[1], group_access=form.group_access.data)
             db.session.add(new_case)
             db.session.commit()
             flash("The case has been created.")
