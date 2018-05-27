@@ -12,13 +12,14 @@ class Cases(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     case_name = db.Column(db.String(128), index=True)
     description = db.Column(db.String(256), index=True)
-    time_stamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created_time_stamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    modify_time_stamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     detection_method = db.Column(db.String(32), index=True)
     # TODO make subject pull from task subject table
     subject = db.Column(db.String(256))
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     group_access = db.Column(db.Integer, db.ForeignKey('groups.id'))
-    case_status = db.Column(db.String(128))
+    case_status = db.Column(db.String(128), db.ForeignKey('task_states.task_state_name'))
 
     def __repr__(self):
         return '<Cases {}>'.format(self.case_name)
