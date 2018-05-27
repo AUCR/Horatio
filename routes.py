@@ -28,13 +28,16 @@ def cases_plugin_route():
 @tasks_page.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_case_route():
-    """Create case default view"""
+    """Create case default view."""
     group_info = Groups.query.all()
     if request.method == 'POST':
         form = CreateCase(request.form)
         form.detection_method.choices = AVAILABLE_CHOICES
         if form.validate():
-            file = request.files['file']
+            try:
+                file = request.files['file']
+            except KeyError:
+                file = None
             if file and allowed_file(file.filename):
                 secure_filename(file.filename)
                 get_upload_file_hash(file)
