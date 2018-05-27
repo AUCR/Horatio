@@ -20,10 +20,12 @@
         <div class="mdl-card__actions mdl-card--border ">
             <form class="form" method="post" role="form" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
-                {% include "subtemplates/_subject.html" %}
-                <div class="mdl-layout-spacer"></div>
-                {% include "subtemplates/_description.html" %}
-                <div class="mdl-layout-spacer"></div>
+                {% with form_object=subject, form_object_name="subject" %}
+                    {% include "subtemplates/_form_object_textfield.html" %}
+                {% endwith %}
+                {% with form_object=subject, form_object_name="description" %}
+                    {% include "subtemplates/_form_object_textfield.html" %}
+                {% endwith %}
                 {% include "upload_file.html" %}
                 <!--</div>-->
                 <div class="mdl-layout-spacer"></div>

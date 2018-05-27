@@ -12,5 +12,5 @@ class CreateCase(FlaskForm):
     subject = TextAreaField(_l('Subject'), validators=[Length(min=0, max=256)])
     description = TextAreaField(_l('Description'), validators=[Length(min=0, max=256)])
     detection_method = SelectMultipleField('Detection Method', choices=AVAILABLE_CHOICES)
-    group_access = IntegerField(_l('GroupAccess'))
+    group_access = IntegerField(_l('Group Access'))
     submit = SubmitField(_l('Create'))

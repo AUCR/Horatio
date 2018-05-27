@@ -1,4 +1,5 @@
 # coding=utf-8
+import udatetime
 from app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
@@ -6,7 +7,7 @@ from app.plugins.auth.models import Groups
 from app.plugins.tasks.routes import tasks_page
 from app.plugins.Horatio.forms import CreateCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
-from app.plugins.Horatio.models import Cases
+from app.plugins.Horatio.models import Cases, Detection
 from app.plugins.analysis.routes import get_upload_file_hash
 from app.plugins.analysis.file.upload import allowed_file
 from werkzeug.utils import secure_filename
@@ -43,11 +44,13 @@ def create_case_route():
                     detection_method_selection = items
             new_case = Cases(description=form.description.data, subject=form.subject.data,
                              created_by=current_user.id, case_status="New Issue",
-                             detection_method=detection_method_selection[1], group_access=form.group_access.data)
+                             detection_method=detection_method_selection[1], group_access=form.group_access.data,
+                             created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow())
             db.session.add(new_case)
             db.session.commit()
             flash("The case has been created.")
             return redirect(url_for('tasks.cases_plugin_route'))
     form = CreateCase(request.form)
-    return render_template('create_case.html', title='Create Case', form=form, groups=group_info, detection_method=AVAILABLE_CHOICES)
+    return render_template('create_case.html', title='Create Case', form=form, groups=group_info,
+                           detection_method=AVAILABLE_CHOICES)
 
