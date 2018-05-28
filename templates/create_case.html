@@ -19,6 +19,9 @@
             <div class="mdl-card__actions mdl-card--border ">
                 <form class="form" method="post" role="form" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
+                    {% with form_object=name, form_object_name="name", form_object_rows=4, form_object_label="Name" %}
+                        {% include "subtemplates/_form_object_textfield.html" %}
+                    {% endwith %}
                     {% with form_object=subject, form_object_name="subject", form_object_rows=4, form_object_label="Subject" %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}

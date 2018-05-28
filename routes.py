@@ -3,7 +3,7 @@ import udatetime
 from app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.plugins.auth.models import Groups
+from app.plugins.auth.models import Groups, Group
 from app.plugins.tasks.routes import tasks_page
 from app.plugins.Horatio.forms import CreateCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
@@ -45,7 +45,7 @@ def create_case_route():
             for items in AVAILABLE_CHOICES:
                 if items[0] == form.detection_method.data[0]:
                     detection_method_selection = items
-            new_case = Cases(description=form.description.data, subject=form.subject.data,
+            new_case = Cases(case_name=form.name.data, description=form.description.data, subject=form.subject.data,
                              created_by=current_user.id, case_status="New Issue",
                              detection_method=detection_method_selection[1], group_access=form.group_access.data,
                              created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow())
@@ -56,4 +56,33 @@ def create_case_route():
     form = CreateCase(request.form)
     return render_template('create_case.html', title='Create Case', form=form, groups=group_info,
                            detection_method=AVAILABLE_CHOICES)
+
+@tasks_page.route('/edit', methods=['GET', 'POST'])
+@login_required
+def edit_case_route():
+    """Edit case view."""
+    group_info = Groups.query.all()
+    case_id = request.args.get("case_id")
+    user_id = Group.query.filter_by(username_id=current_user.id).all()
+    allowed = False
+    for user_group in user_id:
+        if user_group.groups_id == case_id:
+            allowed = True
+
+    # group_info = Groups.query.filter_by(user_id=)
+    if request.method == 'POST':
+        if allowed:
+            form = CreateCase(request.form)
+        else:
+            return
+    if request.method == "GET":
+        if allowed:
+            form = CreateCase(request.form)
+            return render_template('create_case.html', title='Edit Case', form=form, groups=group_info,
+                                   detection_method=AVAILABLE_CHOICES)
+        else:
+            return cases_plugin_route()
+        # for user in user_id:
+        #     cases.append(Cases.query.filter_by(group_access=user.groups_id))
+
 

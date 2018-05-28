@@ -15,6 +15,7 @@
                 <table class="mdl-data-table mdl-js-data-table">
                     <thead>
                         <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Case Name</th>
                             <th class="mdl-data-table__cell--non-numeric">Case Number</th>
                             <th class="mdl-data-table__cell--non-numeric">Case Description</th>
                             <th class="mdl-data-table__cell--non-numeric">Case Subject</th>
@@ -24,6 +25,7 @@
                     <tbody>
                     {% for items in case_list %}
                         <tr>
+                            <td>{{ items.case_name}}</td>
                             <td class="mdl-data-table__cell--non-numeric">{{ items.id }}</td>
                             <td>{{ items.description }}</td>
                             <td>{{ items.subject }}</td>
