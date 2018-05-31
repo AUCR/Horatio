@@ -9,6 +9,7 @@ from app.plugins.Horatio.globals import AVAILABLE_CHOICES
 
 class CreateCase(FlaskForm):
     """Crease Case Form."""
+    name = TextAreaField(_l('Name'), validators=[Length(min=0, max=256)])
     subject = TextAreaField(_l('Subject'), validators=[Length(min=0, max=256)])
     description = TextAreaField(_l('Description'), validators=[Length(min=0, max=256)])
     detection_method = SelectMultipleField('Detection Method', choices=AVAILABLE_CHOICES)

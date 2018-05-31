@@ -3,3 +3,6 @@ tasks:
 
 reports:
   user: [Cases: 'tasks.cases_plugin_route']
+
+analysis:
+  user: [Edit: 'tasks.edit_case_route']
