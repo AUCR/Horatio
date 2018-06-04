@@ -25,7 +25,9 @@
                     <tbody>
                     {% for items in case_list %}
                         <tr>
-                            <td>{{ items.case_name}}</td>
+                            <td>
+                                <a href="{{ url_for('tasks.edit_case_route', case_id= items.id)}}">{{ items.case_name}}</a>
+                            </td>
                             <td class="mdl-data-table__cell--non-numeric">{{ items.id }}</td>
                             <td>{{ items.description }}</td>
                             <td>{{ items.subject }}</td>
