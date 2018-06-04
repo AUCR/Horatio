@@ -19,22 +19,22 @@
             <div class="mdl-card__actions mdl-card--border ">
                 <form class="form" method="post" role="form" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
-                    {% with form_object=name, form_object_name="name", form_object_rows=4, form_object_label="Name" %}
+                    {% with form_object=name, form_object_name="name", form_object_rows=4, form_object_label="Name", form_object_value=form.data.name %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
-                    {% with form_object=subject, form_object_name="subject", form_object_rows=4, form_object_label="Subject" %}
+                    {% with form_object=subject, form_object_name="subject", form_object_rows=4, form_object_label="Subject", form_object_value=form.data.subject %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
-                    {% with form_object=subject, form_object_name="description", form_object_rows=4, form_object_label="Description" %}
+                    {% with form_object=subject, form_object_name="description", form_object_rows=4, form_object_label="Description", form_object_value=form.data.description %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
                     {% include "upload_file.html" %}
                     <!--</div>-->
                     <div class="mdl-layout-spacer"></div>
-                    {% with iterable_thing=detection_method, dropdown_topic="detection_method", dropdown_label="Detection Method"%}
+                    {% with iterable_thing=detection_method, dropdown_topic="detection_method", dropdown_label="Detection Method", form_object_value=form.data.detection_method %}
                         {% include "subtemplates/_dropdown_list.html" %}
                     {% endwith %}
-                    {% with iterable_thing=groups, dropdown_topic="group_access", dropdown_label="Group Access" %}
+                    {% with iterable_thing=groups, dropdown_topic="group_access", dropdown_label="Group Access",form_object_value=form.data.group_acccess %}
                         {% include "subtemplates/_dropdown_object.html" %}
                     {% endwith %}
                     <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"

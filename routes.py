@@ -11,6 +11,7 @@ from app.plugins.Horatio.models import Cases, Detection
 from app.plugins.analysis.routes import get_upload_file_hash
 from app.plugins.analysis.file.upload import allowed_file
 from werkzeug.utils import secure_filename
+from sqlalchemy import or_, and_
 
 cases = Blueprint('cases', __name__, template_folder='templates')
 
@@ -62,22 +63,24 @@ def create_case_route():
 def edit_case_route():
     """Edit case view."""
     group_info = Groups.query.all()
-    case_id = request.args.get("case_id")
-    user_id = Group.query.filter_by(username_id=current_user.id).all()
-    allowed = False
-    for user_group in user_id:
-        if user_group.groups_id == case_id:
-            allowed = True
+    submitted_case_id = request.args.get("case_id")
+    group_ids = Group.query.filter_by(username_id=current_user.id).all()
+    user_groups = []
+    for user_group in group_ids:
+        user_groups.append(user_group.groups_id)
+    case = Cases.query.filter_by(id=submitted_case_id)
+    case = case.filter(or_(Cases.id==submitted_case_id, Cases.group_access.in_(user_groups))).first()
+    # case = Cases.query.filter(id=submitted_case_id)
+    # case = case.filter()
+    # case = Cases.query.filter(id=submitted_case_id, group_acces.in_(user_groups))
 
     # group_info = Groups.query.filter_by(user_id=)
     if request.method == 'POST':
-        if allowed:
-            form = CreateCase(request.form)
-        else:
-            return
+        # form = CreateCase(case)
+        print("editing case")
     if request.method == "GET":
-        if allowed:
-            form = CreateCase(request.form)
+        if case:
+            form = CreateCase(obj=case, name=case.case_name, method=case.detection_method)
             return render_template('create_case.html', title='Edit Case', form=form, groups=group_info,
                                    detection_method=AVAILABLE_CHOICES)
         else:
