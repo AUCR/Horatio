@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.plugins.auth.models import Groups, Group
 from app.plugins.tasks.routes import tasks_page
-from app.plugins.Horatio.forms import CreateCase
+from app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
 from app.plugins.Horatio.models import Cases, Detection
 from app.plugins.analysis.routes import get_upload_file_hash
@@ -23,7 +23,13 @@ def cases_plugin_route():
     # TODO show current cases in the database
     page = request.args.get('page', 1, type=int)
     case_list = Cases.query.all()
-    return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_list)
+    case_dict = {}
+    for item in case_list:
+        item_dict = {"case_id": item.id, "subject": item.subject,
+                     "description": item.description, "status": item.case_status}
+        case_dict[str(item.id)] = item_dict
+
+    return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_list, table_dict=case_dict)
 
 
 @tasks_page.route('/create', methods=['GET', 'POST'])
@@ -34,6 +40,7 @@ def create_case_route():
     if request.method == 'POST':
         form = CreateCase(request.form)
         form.detection_method.choices = AVAILABLE_CHOICES
+        file_hash = None
         if form.validate():
             try:
                 file = request.files['file']
@@ -41,15 +48,16 @@ def create_case_route():
                 file = None
             if file and allowed_file(file.filename):
                 secure_filename(file.filename)
-                get_upload_file_hash(file)
+                file_hash = get_upload_file_hash(file)
             detection_method_selection = None
             for items in AVAILABLE_CHOICES:
                 if items[0] == form.detection_method.data[0]:
                     detection_method_selection = items
-            new_case = Cases(case_name=form.name.data, description=form.description.data, subject=form.subject.data,
+            new_case = Cases(description=form.description.data, subject=form.subject.data,
                              created_by=current_user.id, case_status="New Issue",
                              detection_method=detection_method_selection[1], group_access=form.group_access.data,
-                             created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow())
+                             created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow(),
+                             attached_files=file_hash)
             db.session.add(new_case)
             db.session.commit()
             flash("The case has been created.")
@@ -57,6 +65,7 @@ def create_case_route():
     form = CreateCase(request.form)
     return render_template('create_case.html', title='Create Case', form=form, groups=group_info,
                            detection_method=AVAILABLE_CHOICES)
+
 
 @tasks_page.route('/edit', methods=['GET', 'POST'])
 @login_required
@@ -70,22 +79,22 @@ def edit_case_route():
         user_groups.append(user_group.groups_id)
     case = Cases.query.filter_by(id=submitted_case_id)
     case = case.filter(or_(Cases.id==submitted_case_id, Cases.group_access.in_(user_groups))).first()
-    # case = Cases.query.filter(id=submitted_case_id)
-    # case = case.filter()
-    # case = Cases.query.filter(id=submitted_case_id, group_acces.in_(user_groups))
-
-    # group_info = Groups.query.filter_by(user_id=)
     if request.method == 'POST':
-        # form = CreateCase(case)
-        print("editing case")
+        if case:
+            form = EditCase(request.form)
+            if form.validate_on_submit():
+                case.subject = request.form["subject"]
+                case.description = request.form["description"]
+                case.case_notes = request.form["case_notes"]
+                case.case_rules = request.form["case_rules"]
+                db.session.commit()
+        return cases_plugin_route()
     if request.method == "GET":
         if case:
-            form = CreateCase(obj=case, name=case.case_name, method=case.detection_method)
-            return render_template('create_case.html', title='Edit Case', form=form, groups=group_info,
-                                   detection_method=AVAILABLE_CHOICES)
+            form = EditCase(case)
+            table_dict = {"case_id": case.id, "subject": case.subject, "description": case.description,
+                          "case_notes": case.case_notes, "case_rules": case.case_rules}
+            return render_template('edit_case.html', title='Edit Case', form=form, groups=group_info,
+                                   detection_method=AVAILABLE_CHOICES, table_dict=table_dict)
         else:
             return cases_plugin_route()
-        # for user in user_id:
-        #     cases.append(Cases.query.filter_by(group_access=user.groups_id))
-
-

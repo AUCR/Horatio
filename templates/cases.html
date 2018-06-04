@@ -4,40 +4,18 @@
 {% block app_content %}
     <main class="mdl-layout__content">
         <div class="page-content">
-            <h1>{{ _('Cases') }}</h1>
-            <p>This is a placeholder for cases app content that is imported
-                form any plugins in this dir This should be a loop that goes
-                through and checks group permissions and shows the user what
-                they can see</p>
+                <div class="mdl-grid">
+            <span class="mdl-layout-title">Cases</span>
+            <div class="mdl-layout-spacer"></div>
+            {% with form_object="createbutton", button_icon="add", button_text="Create Case", button_value="createbuttonvalue" %}
+                {% include "subtemplates/_plain_button.html" %}
+            {% endwith %}
         </div>
-        <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-            <div class="mdl-card mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">
-                <table class="mdl-data-table mdl-js-data-table">
-                    <thead>
-                        <tr>
-                            <th class="mdl-data-table__cell--non-numeric">Case Name</th>
-                            <th class="mdl-data-table__cell--non-numeric">Case Number</th>
-                            <th class="mdl-data-table__cell--non-numeric">Case Description</th>
-                            <th class="mdl-data-table__cell--non-numeric">Case Subject</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for items in case_list %}
-                        <tr>
-                            <td>
-                                <a href="{{ url_for('tasks.edit_case_route', case_id= items.id)}}">{{ items.case_name}}</a>
-                            </td>
-                            <td class="mdl-data-table__cell--non-numeric">{{ items.id }}</td>
-                            <td>{{ items.description }}</td>
-                            <td>{{ items.subject }}</td>
-
-                            <td></td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        <div class="mdl-layout-spacer"></div>
+        {% with form_object="table",table_list=["Delete", "Merge"], table_header=["Case ID", "Subject", "Description", "Case Status"] %}
+            {% include "subtemplates/_table_object.html" %}
+        {% endwith %}
+        <div class="mdl-layout-spacer"></div>
+        </div>
     </main>
 {% endblock %}
