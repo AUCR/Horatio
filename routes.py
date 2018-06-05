@@ -11,7 +11,7 @@ from app.plugins.Horatio.models import Cases, Detection
 from app.plugins.analysis.routes import get_upload_file_hash
 from app.plugins.analysis.file.upload import allowed_file
 from werkzeug.utils import secure_filename
-from sqlalchemy import or_, and_
+from sqlalchemy import or_
 
 cases = Blueprint('cases', __name__, template_folder='templates')
 
@@ -25,7 +25,7 @@ def cases_plugin_route():
     case_list = Cases.query.all()
     case_dict = {}
     for item in case_list:
-        item_dict = {"case_id": item.id, "subject": item.subject,
+        item_dict = {"id": item.id, "subject": item.subject,
                      "description": item.description, "status": item.case_status}
         case_dict[str(item.id)] = item_dict
 
@@ -72,7 +72,7 @@ def create_case_route():
 def edit_case_route():
     """Edit case view."""
     group_info = Groups.query.all()
-    submitted_case_id = request.args.get("case_id")
+    submitted_case_id = request.args.get("id")
     group_ids = Group.query.filter_by(username_id=current_user.id).all()
     user_groups = []
     for user_group in group_ids:
@@ -92,7 +92,7 @@ def edit_case_route():
     if request.method == "GET":
         if case:
             form = EditCase(case)
-            table_dict = {"case_id": case.id, "subject": case.subject, "description": case.description,
+            table_dict = {"id": case.id, "subject": case.subject, "description": case.description,
                           "case_notes": case.case_notes, "case_rules": case.case_rules}
             return render_template('edit_case.html', title='Edit Case', form=form, groups=group_info,
                                    detection_method=AVAILABLE_CHOICES, table_dict=table_dict)
