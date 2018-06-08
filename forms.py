@@ -16,6 +16,11 @@ class CreateCase(FlaskForm):
     current_state = SelectMultipleField('Status', choices=AVAILABLE_CHOICES)
     detection_method = SelectMultipleField('Detection Method', choices=AVAILABLE_CHOICES)
     group_access = SelectMultipleField(_l('Group Access'), choices=AVAILABLE_CHOICES)
+    malicious_ips = TextAreaField(_l('Malicious Ips'), validators=[Length(min=0, max=256)])
+    malicious_domains = TextAreaField(_l('Malicious Domains'), validators=[Length(min=0, max=256)])
+    malicious_md5s = TextAreaField(_l('Malicious MD5s'), validators=[Length(min=0, max=256)])
+
+
     submit = SubmitField(_l('Create'))
 
 
@@ -31,6 +36,9 @@ class EditCase(FlaskForm):
     detection_method = SelectMultipleField('Detection Method', choices=AVAILABLE_CHOICES)
     group_access = SelectMultipleField(_l('Group Access'), choices=AVAILABLE_CHOICES)
     submit = SubmitField(_l('Save'))
+    malicious_ips = TextAreaField(_l('Malicious Ips'), validators=[Length(min=0, max=256)])
+    malicious_domains = TextAreaField(_l('Malicious Domains'), validators=[Length(min=0, max=256)])
+    malicious_md5s = TextAreaField(_l('Malicious MD5s'), validators=[Length(min=0, max=256)])
 
     def __init__(self, case, *args, **kwargs):
         """Edit user profile init self and return username."""

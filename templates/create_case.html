@@ -36,6 +36,15 @@
                     {% with iterable_thing=groups, dropdown_topic="group_access", dropdown_label="Group Access",form_object_value=form.data.group_acccess %}
                         {% include "subtemplates/_dropdown_object.html" %}
                     {% endwith %}
+                    {% with form_object=subject, form_object_name="malicious_ips", form_object_rows=1, form_object_label="Malicous Ips", form_object_value=None %}
+                        {% include "subtemplates/_form_object_textfield.html" %}
+                    {% endwith %}
+                    {% with form_object=subject, form_object_name="malicious_domains", form_object_rows=1, form_object_label="Malicious Domains", form_object_value=None %}
+                        {% include "subtemplates/_form_object_textfield.html" %}
+                    {% endwith %}
+                    {% with form_object=subject, form_object_name="malicious_md5s", form_object_rows=1, form_object_label="Malicious md5s", form_object_value=None%}
+                        {% include "subtemplates/_form_object_textfield.html" %}
+                    {% endwith %}
                     <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                             value=data-val.value>
                         Create

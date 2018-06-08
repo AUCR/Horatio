@@ -30,7 +30,8 @@ class Indicator(db.Model):
     __tablename__ = 'indicators'
     indicator_id = db.Column(db.Integer, primary_key=True)
     case_id = db.Column(db.Integer, index=True)
-    point_value = db.collate(db.Integer, collation="NOCASE")
+    point_value = db.Column(db.Integer)
+    value = db.Column(db.String(256))
     type_id = db.Column(db.Integer, index=True)
 
     def __repr__(self):

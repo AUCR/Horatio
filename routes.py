@@ -7,11 +7,12 @@ from app.plugins.auth.models import Groups, Group
 from app.plugins.tasks.routes import tasks_page
 from app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
-from app.plugins.Horatio.models import Cases, Detection
+from app.plugins.Horatio.models import Cases, Detection, Indicator,Indicator_Type
 from app.plugins.analysis.routes import get_upload_file_hash
 from app.plugins.analysis.file.upload import allowed_file
 from werkzeug.utils import secure_filename
 from sqlalchemy import or_
+from re import split
 
 cases = Blueprint('cases', __name__, template_folder='templates')
 
@@ -53,18 +54,34 @@ def create_case_route():
             for items in AVAILABLE_CHOICES:
                 if items[0] == form.detection_method.data[0]:
                     detection_method_selection = items
-            new_case = Cases(description=form.description.data[0], subject=form.subject.data[0],
+            new_case = Cases(description=form.description.data, subject=form.subject.data,
                              created_by=current_user.id, case_status="New Issue",
                              detection_method=detection_method_selection[1], group_access=form.group_access.data[0],
                              created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow(),
                              attached_files=file_hash)
             db.session.add(new_case)
             db.session.commit()
+            delim = '(?:\s*[,;])?\s*'
+            domains = split(delim, form.malicious_domains.data)
+            ips = split(delim, form.malicious_ips.data)
+            md5s = split(delim, form.malicious_md5s.data)
+            submit_indicator(new_case.id, domains, Indicator_Type.query.filter_by(name="domains").all()[0].indicator_type_id)
+            submit_indicator(new_case.id, ips, Indicator_Type.query.filter_by(name="ips").all()[0].indicator_type_id)
+            submit_indicator(new_case.id, md5s, Indicator_Type.query.filter_by(name="md5s").all()[0].indicator_type_id)
+
             flash("The case has been created.")
             return redirect(url_for('tasks.cases_plugin_route'))
     form = CreateCase(request.form)
     return render_template('create_case.html', title='Create Case', form=form, groups=group_info,
                            detection_method=AVAILABLE_CHOICES)
+
+def submit_indicator(caseID, values, indicator_type):
+    for item in values:
+
+        new_indicator = Indicator(case_id=caseID, type_id=indicator_type, value=item)
+        db.session.add(new_indicator)
+    db.session.commit()
+
 
 
 @tasks_page.route('/edit', methods=['GET', 'POST'])
