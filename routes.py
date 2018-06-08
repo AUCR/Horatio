@@ -3,7 +3,7 @@ import udatetime
 from app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.plugins.auth.models import Groups, Group
+from app.plugins.auth.models import Groups, Group, Award, User
 from app.plugins.tasks.routes import tasks_page
 from app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
@@ -77,9 +77,9 @@ def create_case_route():
 
 def submit_indicator(caseID, values, indicator_type):
     for item in values:
-
-        new_indicator = Indicator(case_id=caseID, type_id=indicator_type, value=item)
-        db.session.add(new_indicator)
+        if item != '':
+            new_indicator = Indicator(case_id=caseID, type_id=indicator_type, value=item, point_value=100)
+            db.session.add(new_indicator)
     db.session.commit()
 
 
@@ -100,11 +100,18 @@ def edit_case_route():
         if case:
             form = EditCase(request.form)
             if form.validate_on_submit():
-                case.subject = request.form["subject"]
-                case.description = request.form["description"]
-                case.case_notes = request.form["case_notes"]
-                case.case_rules = request.form["case_rules"]
-                db.session.commit()
+                if case is not None:
+                    case.subject = request.form["subject"]
+                    case.description = request.form["description"]
+                    case.case_notes = request.form["case_notes"]
+                    db.session.commit()
+                    delim = '(?:\s*[,;])?\s*'
+                    score(group_ids,case.id, split(delim,request.form["malicious_domains"]),  current_user.id, 3)
+                    score(group_ids,case.id, split(delim,request.form["malicious_ips"]), current_user.id, 1)
+                    score(group_ids,case.id,  split(delim,request.form["malicious_md5s"]), current_user.id, 2)
+                    user_points = len(Award.query.filter_by(username=current_user.id).all())*100
+                    User.query.filter_by(id=current_user.id).first().score = user_points
+                    db.session.commit()
         return cases_plugin_route()
     if request.method == "GET":
         if case:
@@ -115,3 +122,37 @@ def edit_case_route():
                                    detection_method=AVAILABLE_CHOICES, table_dict=table_dict)
         else:
             return cases_plugin_route()
+
+
+def score(group_id, case_id, submitted_indicators, user_id, indicator_type_id):
+    score = 0
+    # get score
+    known_indicators = Indicator.query.filter_by(case_id=case_id).filter(Indicator.type_id==indicator_type_id).all()
+    if known_indicators is None:
+        return
+    known_indicator_dict = {}
+    for indicator in known_indicators:
+        known_indicator_dict[indicator.indicator_id] = indicator.value
+    # for indicator in md5_indicators:
+    #     md5s.append(indicator.value)
+    # domains = []
+    # for indicator in domain_indicators:
+    #     domains.append(indicator.value)
+    for k,v in known_indicator_dict.items():
+        if v in submitted_indicators:
+            award_status = Award.query.filter_by(username=user_id, indicator_id=k).all()
+            if len(award_status) == 0:
+                solve = Award(username=user_id, case_id = case_id, indicator_id=k)
+                db.session.add(solve)
+    db.session.commit()
+        # score += len(list(set(submitted_indicators).intersection(known_indicator_dict))) * 100
+
+    # if md5_indicators is not None:
+    #     score += len(list(set(mal_md5s).intersection(md5s)))*100
+    # if domain_indicators is not None:
+    #     score += len(list(set(mal_doms).intersection(domains)))*100
+    # get group
+    # compare scores
+    # update score
+    group = Group.query.filter_by(id=group_id)
+

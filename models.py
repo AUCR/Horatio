@@ -45,6 +45,18 @@ class Indicator_Type(db.Model):
     def __repr__(self):
         return '<Indicator_Type {}>'.format(self.name)
 
+# class Awards(db.Model):
+#     __tablename__ = 'awards'
+#     award_id = db.Column(db.Integer, primary_key=True)
+#     indicator_id = db.Column(db.Integer)
+#     case_id = db.Column(db.Integer)
+#     user_id= db.Column(db.Integer, db.ForeignKey('user.id'))
+#
+#     name = db.Column(db.String(256))
+#
+#     def __repr__(self):
+#         return '<Indicator_Type {}>'.format(self.award_id)
+
 class Detection(db.Model):
     """Detection method data default table for aucr."""
 
