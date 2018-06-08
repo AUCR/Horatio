@@ -26,6 +26,23 @@ class Cases(db.Model):
     def __repr__(self):
         return '<Cases {}>'.format(self.case_name)
 
+class Indicator(db.Model):
+    __tablename__ = 'indicators'
+    indicator_id = db.Column(db.Integer, primary_key=True)
+    case_id = db.Column(db.Integer, index=True)
+    point_value = db.collate(db.Integer, collation="NOCASE")
+    type_id = db.Column(db.Integer, index=True)
+
+    def __repr__(self):
+        return '<Indicator {}>'.format(self.point_value)
+
+class Indicator_Type(db.Model):
+    __tablename__ = 'indicator_types'
+    indicator_type_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256))
+
+    def __repr__(self):
+        return '<Indicator_Type {}>'.format(self.name)
 
 class Detection(db.Model):
     """Detection method data default table for aucr."""
@@ -42,11 +59,17 @@ class Detection(db.Model):
 
 def insert_initial_detection_values(*args, **kwargs):
     """Insert Task category default database values from a yaml template file."""
-    run = YamlInfo("app/plugins/Horatio/detection_methods.yml", "none", "none")
-    detection_data = run.get()
+    detection_run = YamlInfo("app/plugins/Horatio/detection_methods.yml", "none", "none")
+    indicator_run = YamlInfo("app/plugins/Horatio/indicator_types.yml", "none", "none")
+    detection_data = detection_run.get()
+    indicator_data= indicator_run.get()
     for items in detection_data:
         new_detection_table_row = Detection(detection_method=items)
         db.session.add(new_detection_table_row)
+        db.session.commit()
+    for items in indicator_data:
+        new_indicator_table_row = Indicator_Type(name=items)
+        db.session.add(new_indicator_table_row)
         db.session.commit()
 
 

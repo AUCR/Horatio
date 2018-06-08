@@ -31,7 +31,16 @@
                     {% with form_object=subject, form_object_name="case_notes", form_object_rows=20, form_object_label="Case Notes", form_object_value=form.case_notes %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
-                    {% with form_object=subject, form_object_name="case_rules", form_object_rows=20, form_object_label="Case Rules", form_object_value=form.case_rules %}
+{#                    {% with form_object=subject, form_object_name="case_rules", form_object_rows=20, form_object_label="Case Rules", form_object_value=form.case_rules %}#}
+{#                        {% include "subtemplates/_form_object_textfield.html" %}#}
+{#                    {% endwith %}#}
+                    {% with form_object=subject, form_object_name="Ips", form_object_rows=1, form_object_label="Malicous Ips", form_object_value=form.malIps%}
+                        {% include "subtemplates/_form_object_textfield.html" %}
+                    {% endwith %}
+                    {% with form_object=subject, form_object_name="Domains", form_object_rows=1, form_object_label="Malicious Domains", form_object_value=form.malDomains%}
+                        {% include "subtemplates/_form_object_textfield.html" %}
+                    {% endwith %}
+                    {% with form_object=subject, form_object_name="md5s", form_object_rows=1, form_object_label="Malicious md5s", form_object_value=form.malmd5s%}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
                     <!--</div>-->
