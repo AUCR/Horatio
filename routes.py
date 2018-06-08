@@ -106,9 +106,9 @@ def edit_case_route():
                     case.case_notes = request.form["case_notes"]
                     db.session.commit()
                     delim = '(?:\s*[,;])?\s*'
-                    score(group_ids,case.id, split(delim,request.form["malicious_domains"]),  current_user.id, 3)
-                    score(group_ids,case.id, split(delim,request.form["malicious_ips"]), current_user.id, 1)
-                    score(group_ids,case.id,  split(delim,request.form["malicious_md5s"]), current_user.id, 2)
+                    score(case.id, split(delim,request.form["malicious_domains"]),  current_user.id, 3)
+                    score(case.id, split(delim,request.form["malicious_ips"]), current_user.id, 1)
+                    score(case.id,  split(delim,request.form["malicious_md5s"]), current_user.id, 2)
                     user_points = len(Award.query.filter_by(username=current_user.id).all())*100
                     User.query.filter_by(id=current_user.id).first().score = user_points
                     db.session.commit()
@@ -124,20 +124,13 @@ def edit_case_route():
             return cases_plugin_route()
 
 
-def score(group_id, case_id, submitted_indicators, user_id, indicator_type_id):
-    score = 0
-    # get score
+def score(case_id, submitted_indicators, user_id, indicator_type_id):
     known_indicators = Indicator.query.filter_by(case_id=case_id).filter(Indicator.type_id==indicator_type_id).all()
     if known_indicators is None:
         return
     known_indicator_dict = {}
     for indicator in known_indicators:
         known_indicator_dict[indicator.indicator_id] = indicator.value
-    # for indicator in md5_indicators:
-    #     md5s.append(indicator.value)
-    # domains = []
-    # for indicator in domain_indicators:
-    #     domains.append(indicator.value)
     for k,v in known_indicator_dict.items():
         if v in submitted_indicators:
             award_status = Award.query.filter_by(username=user_id, indicator_id=k).all()
@@ -145,14 +138,3 @@ def score(group_id, case_id, submitted_indicators, user_id, indicator_type_id):
                 solve = Award(username=user_id, case_id = case_id, indicator_id=k)
                 db.session.add(solve)
     db.session.commit()
-        # score += len(list(set(submitted_indicators).intersection(known_indicator_dict))) * 100
-
-    # if md5_indicators is not None:
-    #     score += len(list(set(mal_md5s).intersection(md5s)))*100
-    # if domain_indicators is not None:
-    #     score += len(list(set(mal_doms).intersection(domains)))*100
-    # get group
-    # compare scores
-    # update score
-    group = Group.query.filter_by(id=group_id)
-
