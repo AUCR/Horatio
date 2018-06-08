@@ -53,9 +53,9 @@ def create_case_route():
             for items in AVAILABLE_CHOICES:
                 if items[0] == form.detection_method.data[0]:
                     detection_method_selection = items
-            new_case = Cases(description=form.description.data, subject=form.subject.data,
+            new_case = Cases(description=form.description.data[0], subject=form.subject.data[0],
                              created_by=current_user.id, case_status="New Issue",
-                             detection_method=detection_method_selection[1], group_access=form.group_access.data,
+                             detection_method=detection_method_selection[1], group_access=form.group_access.data[0],
                              created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow(),
                              attached_files=file_hash)
             db.session.add(new_case)
