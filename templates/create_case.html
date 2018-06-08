@@ -21,10 +21,10 @@
             <div class="mdl-card__actions mdl-card--border ">
                 <form class="form" method="post" role="form" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
-                    {% with form_object=subject, form_object_name="subject", form_object_rows=1, form_object_label="Subject", form_object_value=form.data.subject %}
+                    {% with form_object=subject, form_object_name="subject", form_object_rows=1, form_object_label="Subject", form_object_value=form.data.subject  if form.data.subject != None else ""%}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
-                    {% with form_object=description, form_object_name="description", form_object_rows=1, form_object_label="Description", form_object_value=form.data.description %}
+                    {% with form_object=description, form_object_name="description", form_object_rows=1, form_object_label="Description", form_object_value=form.data.subject  if form.data.subject != None else ""%}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
                     {% include "upload_file.html" %}
