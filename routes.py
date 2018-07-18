@@ -4,7 +4,6 @@ from app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.plugins.auth.models import Groups, Group, Award, User
-from app.plugins.tasks.routes import tasks_page
 from app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
 from app.plugins.Horatio.models import Cases, Detection
@@ -13,10 +12,10 @@ from app.plugins.analysis.file.upload import allowed_file
 from werkzeug.utils import secure_filename
 from sqlalchemy import or_
 
-cases = Blueprint('cases', __name__, template_folder='templates')
+cases_page = Blueprint('cases', __name__, template_folder='templates')
 
 
-@tasks_page.route('/cases', methods=['GET'])
+@cases_page.route('/cases', methods=['GET'])
 @login_required
 def cases_plugin_route():
     """the tasks function returns the plugin framework for the yara_plugin default task view"""
@@ -32,7 +31,7 @@ def cases_plugin_route():
     return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_list, table_dict=case_dict)
 
 
-@tasks_page.route('/create', methods=['GET', 'POST'])
+@cases_page.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_case_route():
     """Create case default view."""
@@ -61,13 +60,13 @@ def create_case_route():
             db.session.add(new_case)
             db.session.commit()
             flash("The case has been created.")
-            return redirect(url_for('tasks.cases_plugin_route'))
+            return redirect(url_for('cases.cases_plugin_route'))
     form = CreateCase(request.form)
     return render_template('create_case.html', title='Create Case', form=form, groups=group_info,
                            detection_method=AVAILABLE_CHOICES)
 
 
-@tasks_page.route('/edit', methods=['GET', 'POST'])
+@cases_page.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit_case_route():
     """Edit case view."""

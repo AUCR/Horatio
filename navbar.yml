@@ -1,9 +1,2 @@
-tasks:
-  admin: [CreateCase: 'tasks.create_case_route']
-  user: [Cases: 'tasks.cases_plugin_route']
-
-reports:
-  admin: [Cases: 'tasks.cases_plugin_route']
-
-analysis:
-  user: [Edit: 'tasks.edit_case_route']
+main:
+  user: [cases: 'cases.cases_plugin_route']
