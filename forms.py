@@ -16,6 +16,7 @@ class CreateCase(FlaskForm):
     current_state = SelectMultipleField('Status', choices=AVAILABLE_CHOICES)
     detection_method = SelectMultipleField('Detection Method', choices=AVAILABLE_CHOICES)
     group_access = SelectMultipleField(_l('Group Access'), choices=AVAILABLE_CHOICES)
+    assigned_to = SelectMultipleField(_l('Assigned To'), choices=AVAILABLE_CHOICES)
     submit = SubmitField(_l('Create'))
 
 
@@ -30,6 +31,7 @@ class EditCase(FlaskForm):
     current_state = SelectMultipleField('Status', choices=AVAILABLE_CHOICES)
     detection_method = SelectMultipleField('Detection Method', choices=AVAILABLE_CHOICES)
     group_access = SelectMultipleField(_l('Group Access'), choices=AVAILABLE_CHOICES)
+    assigned_to = SelectMultipleField(_l('Assigned To'), choices=AVAILABLE_CHOICES)
     submit = SubmitField(_l('Save'))
 
     def __init__(self, case, *args, **kwargs):
@@ -43,6 +45,7 @@ class EditCase(FlaskForm):
             self.case_rules = case.case_rules
             self.detection_method = case.detection_method
             self.group_access = case.group_access
+            self.current_state = case.case_status
         except:
             self.subject = case["subject"]
             self.description = case["description"]

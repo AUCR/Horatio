@@ -16,9 +16,7 @@
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text">{{ title }}</h2>
             </div>
-            <div class="mdl-card__supporting-text">Case ID: {{ form.case_id }}
-                Detection Method: {{ form.detection_method }}
-            </div>
+            <div class="mdl-card__supporting-text">Case ID: {{ form.case_id }}</div>
             <div class="mdl-card__actions">
                 <form class="form" method="post" role="form">
                     {{ form.hidden_tag() }}
@@ -28,6 +26,17 @@
                     {% with form_object=description, form_object_name="description", form_object_rows=1, form_object_label="Description", form_object_value=form.description %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
+                    {% with iterable_thing=case_status, dropdown_topic="case_status", dropdown_label="Status", form_object_value=form.current_state %}
+                        {% include "subtemplates/_dropdown_list.html" %}
+                    {%  endwith %}
+                    {% with iterable_thing=detection_method, dropdown_topic="detection_method", dropdown_label="Detection Method", form_object_value=form.detection_method %}
+                        {% include "subtemplates/_dropdown_list.html" %}
+                    {% endwith %}
+                    {% with iterable_thing=assigned_to, dropdown_topic="assigned_to", dropdown_label="Assigned User", form_object_value=form.assigned_to %}
+                        {% include "subtemplates/_dropdown_list.html" %}
+                    {%  endwith %}
+                    <!--</div>-->
+                    <div class="mdl-layout-spacer"></div>
                     {% with form_object=case_notes, form_object_name="case_notes", form_object_rows=20, form_object_label="Case Notes", form_object_value=form.case_notes %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
