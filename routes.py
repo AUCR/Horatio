@@ -148,7 +148,7 @@ def edit_case_route():
                     case.case_rules = request.form["case_rules"]
                     case.detection_method = request.form["detection_method"]
                     case.case_status = request.form["case_status"]
-                    case.assigned_to = request.form["assigned_to"]
+                    case.assigned_to = int(request.form["assigned_to"])
                     db.session.commit()
         return cases_plugin_route()
     if request.method == "GET":

@@ -2,7 +2,7 @@ info:
   project_name: "Horatio"
   project_start_date: 03/25/2018
   name: "Horatio "
-  authors: "Wyatt Roersma, Devin Smith"
+  authors: "Wyatt Roersma, Devin Smith, Daniel Deneweth"
   authors_email: "wyattroersma@gmail.com"
   description: "A master timekeeper plugin for AUCR."
   license: 'GPL-3.0'
@@ -16,4 +16,4 @@ version:
   major: 0
   minor: 0
   revision: 0
-  release: 1
+  release: 2
