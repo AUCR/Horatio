@@ -30,7 +30,7 @@ def cases_plugin_route():
     state_choices = []
     for state in TaskStates.query.all():
         count += 1
-        state_choices.append((str(count), state.task_state_name))
+        state_choices.append((int(count), state.task_state_name))
     # User choices
     user_choices = []
     for user in User.query.all():
@@ -96,7 +96,7 @@ def create_case_route():
                 if items[0] == form.detection_method.data[0]:
                     detection_method_selection = items
             new_case = Cases(description=form.description.data, subject=form.subject.data,
-                             created_by=current_user.id, case_status="New Issue",
+                             created_by=current_user.id, case_status=4,
                              detection_method=detection_method_selection[1], group_access=form.group_access.data[0],
                              created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow(),
                              attached_files=file_hash, assigned_to=form.assigned_to.data[0])
@@ -125,7 +125,7 @@ def edit_case_route():
     state_choices = []
     for state in TaskStates.query.all():
         count += 1
-        state_choices.append((str(count), state.task_state_name))
+        state_choices.append((int(count), state.task_state_name))
     # User choices
     user_choices = []
     for user in User.query.all():
@@ -146,8 +146,8 @@ def edit_case_route():
                     case.description = request.form["description"]
                     case.case_notes = request.form["case_notes"]
                     case.case_rules = request.form["case_rules"]
-                    case.detection_method = request.form["detection_method"]
-                    case.case_status = request.form["case_status"]
+                    case.detection_method = int(request.form["detection_method"])
+                    case.case_status = int(request.form["case_status"])
                     case.assigned_to = int(request.form["assigned_to"])
                     db.session.commit()
         return cases_plugin_route()

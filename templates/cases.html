@@ -14,7 +14,7 @@
         <div class="mdl-layout-spacer"></div>
         {% with form_object="table",
                 table_list=["Delete", "Merge"],
-                table_header=["Id", "Case Status", "Subject", "Description", "Detection", "Last Modified", "Assigned User"],
+                table_header=["ID", "Status", "Subject", "Description", "Detection", "Last Modified", "Assigned User"],
                 url_for_value='cases.edit_case_route'  %}
             {% include "subtemplates/_table_object.html" %}
         {% endwith %}
