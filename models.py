@@ -8,6 +8,8 @@ from yaml_info.yamlinfo import YamlInfo
 class Cases(db.Model):
     """Case data default table for aucr."""
 
+    __searchable__ = ['id', 'description', 'modify_time_stamp', 'detection_method', 'subject', 'case_notes',
+                      'case_rules', 'created_by', 'assigned_to', 'group_access', 'attached_files',  'case_status']
     __tablename__ = 'cases'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(256), index=True)
