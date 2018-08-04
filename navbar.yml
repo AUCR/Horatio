@@ -1,2 +1,8 @@
 main:
-  user: [cases: 'cases.cases_plugin_route']
+    user: [
+        link: [
+              page: 'cases.cases_plugin_route',
+              icon: 'ballot',
+              title: 'Cases'
+            ]
+      ]

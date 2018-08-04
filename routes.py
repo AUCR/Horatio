@@ -3,7 +3,7 @@ import udatetime
 from app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.plugins.auth.models import Groups, Group, Award, User
+from app.plugins.auth.models import Groups, Group, User
 from app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
 from app.plugins.Horatio.globals import AVAILABLE_CHOICES
 from app.plugins.Horatio.models import Cases, Detection
@@ -56,11 +56,14 @@ def cases_plugin_route():
         for items in user_choices:
             if items[0] == item.assigned_to:
                 assigned_user_value = items[1]
-        item_dict = {"id": item.id, "status": case_status_value,
-                     "subject": item.subject, "description": item.description,
-                     "detection": detection_method_value, "last_modified": item.modify_time_stamp,
-                     "assigned_to": assigned_user_value}
-        case_dict[str(item.id)] = item_dict
+        group_access_value = Group.query.filter_by(username_id=current_user.id, groups_id=item.group_access).first()
+        if group_access_value:
+            item_dict = {"id": item.id, "status": case_status_value,
+                         "subject": item.subject, "description": item.description,
+                         "detection": detection_method_value, "last_modified": item.modify_time_stamp,
+                         "assigned_to": assigned_user_value}
+
+            case_dict[str(item.id)] = item_dict
 
     return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_list, table_dict=case_dict)
 
@@ -156,25 +159,28 @@ def edit_case_route():
             form = EditCase(case)
             # Get the actual value of the status
             case_status_value = case.case_status
-            for items in state_choices:
-                if items[0] == case.case_status:
-                    case_status_value = items[1]
-            # Get the actual value of the detection
-            detection_method_value = case.detection_method
-            for items in AVAILABLE_CHOICES:
-                if items[0] == case.detection_method:
-                    detection_method_value = items[1]
-            # Get the actual value of the assigned user
-            assigned_user_value = case.assigned_to
-            for items in user_choices:
-                if items[0] == case.assigned_to:
-                    assigned_user_value = items[1]
-            table_dict = {"id": case.id, "subject": case.subject, "description": case.description,
-                          "detection": detection_method_value, "status": case_status_value,
-                          "case_notes": case.case_notes, "case_rules": case.case_rules,
-                          "assigned_to": assigned_user_value}
-            return render_template('edit_case.html', title='Edit Case', form=form, groups=group_info,
-                                   detection_method=AVAILABLE_CHOICES, case_status=state_choices,
-                                   assigned_to=user_choices, table_dict=table_dict)
+            group_access_value = Group.query.filter_by(username_id=current_user.id, groups_id=case.group_access).first()
+            if group_access_value:
+                for items in state_choices:
+                    if items[0] == case.case_status:
+                        case_status_value = items[1]
+                # Get the actual value of the detection
+                detection_method_value = case.detection_method
+                for items in AVAILABLE_CHOICES:
+                    if items[0] == case.detection_method:
+                        detection_method_value = items[1]
+                # Get the actual value of the assigned user
+                assigned_user_value = case.assigned_to
+                for items in user_choices:
+                    if items[0] == case.assigned_to:
+                        assigned_user_value = items[1]
+                table_dict = {"id": case.id, "subject": case.subject, "description": case.description,
+                              "detection": detection_method_value, "status": case_status_value,
+                              "case_notes": case.case_notes, "case_rules": case.case_rules,
+                              "assigned_to": assigned_user_value}
+                return render_template('edit_case.html', title='Edit Case', form=form, groups=group_info,
+                                       detection_method=AVAILABLE_CHOICES, case_status=state_choices,
+                                       assigned_to=user_choices, table_dict=table_dict)
+            return cases_plugin_route()
         else:
             return cases_plugin_route()
