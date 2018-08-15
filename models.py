@@ -28,6 +28,25 @@ class Cases(db.Model):
     def __repr__(self):
         return '<Cases {}>'.format(self.case_name)
 
+    def to_dict(self):
+        """Return dictionary object type for API calls."""
+        data = {
+            'id': self.id,
+            'description': self.description,
+            'created_time_stamp': self.created_time_stamp.isoformat() + 'Z',
+            'modify_time_stamp': self.modify_time_stamp.isoformat() + 'Z',
+            'detection_method': self.detection_method,
+            'subject': self.subject,
+            'case_notes': self.case_notes,
+            'case_rules': self.case_rules,
+            'created_by': self.created_by,
+            'assigned_to': self.assigned_to,
+            'group_access': self.group_access,
+            'attached_files': self.attached_files,
+            'case_status': self.case_status
+        }
+        return data
+
 
 class Detection(db.Model):
     """Detection method data default table for aucr."""
