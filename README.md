@@ -22,3 +22,33 @@ From the AUCR/app/plugins dir just git clone https://github.com/AUCR/Horatio and
     cd ../..
     EXPORT FLASK_APP=aucr.py
     flask run --host=127.0.0.1
+    
+    
+    
+## Using the API
+Example use case of getting the case information via the case ID using http on a terminal
+
+
+    http GET httpss://aucr.io/api/case_info/1 "Authorization:Bearer IXPNMHdYkuijPeA9hUGJKv+dRHrToZQtQCiE/2ep6NMM43Q6EOrQPK6/cSlxAQfxf+OcAR7SzyYlAdtRtMAzXQ=="
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    Content-Length: 393
+    Content-Type: application/json
+    Date: Wed, 15 Aug 2018 00:22:27 GMT
+    
+    {
+        "assigned_to": 2,
+        "attached_files": null,
+        "case_notes": "some basic test notes",
+        "case_rules": "domain:[somereallybadmalwaredomain.com]",
+        "case_status": 4,
+        "created_by": 1,
+        "created_time_stamp": "2018-08-14T18:20:46Z",
+        "description": "test description",
+        "detection_method": "1",
+        "group_access": 1,
+        "id": 1,
+        "modify_time_stamp": "2018-08-14T18:20:46Z",
+        "subject": "test subject"
+    }
+
