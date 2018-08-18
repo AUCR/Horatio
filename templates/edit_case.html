@@ -35,6 +35,9 @@
                     {% with iterable_thing=assigned_to, dropdown_topic="assigned_to", dropdown_label="Assigned User", form_object_value=form.assigned_to %}
                         {% include "subtemplates/_dropdown_list.html" %}
                     {%  endwith %}
+                    {% with iterable_thing=groups, dropdown_topic="group_access", dropdown_label="Group Access",form_object_value=form.data.group_acccess %}
+                        {% include "subtemplates/_dropdown_object.html" %}
+                    {% endwith %}
                     <!--</div>-->
                     <div class="mdl-layout-spacer"></div>
                     {% with form_object=case_notes, form_object_name="case_notes", form_object_rows=20, form_object_label="Case Notes", form_object_value=form.case_notes %}

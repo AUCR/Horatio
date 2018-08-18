@@ -152,6 +152,7 @@ def edit_case_route():
                     case.detection_method = int(request.form["detection_method"])
                     case.case_status = int(request.form["case_status"])
                     case.assigned_to = int(request.form["assigned_to"])
+                    case.group_access = int(request.form["group_access"])
                     db.session.commit()
         return cases_plugin_route()
     if request.method == "GET":
@@ -177,7 +178,7 @@ def edit_case_route():
                 table_dict = {"id": case.id, "subject": case.subject, "description": case.description,
                               "detection": detection_method_value, "status": case_status_value,
                               "case_notes": case.case_notes, "case_rules": case.case_rules,
-                              "assigned_to": assigned_user_value}
+                              "assigned_to": assigned_user_value, "group_access": case.group_access}
                 return render_template('edit_case.html', title='Edit Case', form=form, groups=group_info,
                                        detection_method=AVAILABLE_CHOICES, case_status=state_choices,
                                        assigned_to=user_choices, table_dict=table_dict)

@@ -29,7 +29,7 @@ From the AUCR/app/plugins dir just git clone https://github.com/AUCR/Horatio and
 Example use case of getting the case information via the case ID using http on a terminal
 
 
-    http GET httpss://aucr.io/api/case_info/1 "Authorization:Bearer IXPNMHdYkuijPeA9hUGJKv+dRHrToZQtQCiE/2ep6NMM43Q6EOrQPK6/cSlxAQfxf+OcAR7SzyYlAdtRtMAzXQ=="
+    http GET https://aucr.io/api/case_info/1 "Authorization:Bearer IXPNMHdYkuijPeA9hUGJKv+dRHrToZQtQCiE/2ep6NMM43Q6EOrQPK6/cSlxAQfxf+OcAR7SzyYlAdtRtMAzXQ=="
     HTTP/1.1 200 OK
     Connection: keep-alive
     Content-Length: 393
