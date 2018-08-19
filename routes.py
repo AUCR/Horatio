@@ -162,6 +162,9 @@ def edit_case_route():
             case_status_value = case.case_status
             group_access_value = Group.query.filter_by(username_id=current_user.id, groups_id=case.group_access).first()
             if group_access_value:
+                group_choices = []
+                for group in Groups.query.all():
+                    group_choices.append((int(group.id), group.name))
                 for items in state_choices:
                     if items[0] == case.case_status:
                         case_status_value = items[1]
@@ -175,13 +178,17 @@ def edit_case_route():
                 for items in user_choices:
                     if items[0] == case.assigned_to:
                         assigned_user_value = items[1]
+                assigned_group_value = None
+                for items in group_choices:
+                    if items[0] == case.group_access:
+                        assigned_group_value = items[1]
                 table_dict = {"id": case.id, "subject": case.subject, "description": case.description,
                               "detection": detection_method_value, "status": case_status_value,
                               "case_notes": case.case_notes, "case_rules": case.case_rules,
-                              "assigned_to": assigned_user_value, "group_access": case.group_access}
+                              "assigned_to": assigned_user_value, "group_access": assigned_group_value}
                 return render_template('edit_case.html', title='Edit Case', form=form, groups=group_info,
                                        detection_method=AVAILABLE_CHOICES, case_status=state_choices,
-                                       assigned_to=user_choices, table_dict=table_dict)
+                                       assigned_to=user_choices, table_dict=table_dict, groups_access=group_choices)
             return cases_plugin_route()
         else:
             return cases_plugin_route()

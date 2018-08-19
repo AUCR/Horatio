@@ -26,17 +26,17 @@
                     {% with form_object=description, form_object_name="description", form_object_rows=1, form_object_label="Description", form_object_value=form.description %}
                         {% include "subtemplates/_form_object_textfield.html" %}
                     {% endwith %}
-                    {% with iterable_thing=case_status, dropdown_topic="case_status", dropdown_label="Status", form_object_value=form.current_state %}
+                    {% with iterable_thing=case_status, dropdown_topic="case_status", dropdown_label="Status", form_object_value=form.current_state, dropdown_topic_set="True" %}
                         {% include "subtemplates/_dropdown_list.html" %}
                     {%  endwith %}
-                    {% with iterable_thing=detection_method, dropdown_topic="detection_method", dropdown_label="Detection Method", form_object_value=form.detection_method %}
+                    {% with iterable_thing=detection_method, dropdown_topic="detection_method", dropdown_label="Detection Method", form_object_value=form.detection_method, dropdown_topic_set="True" %}
                         {% include "subtemplates/_dropdown_list.html" %}
                     {% endwith %}
-                    {% with iterable_thing=assigned_to, dropdown_topic="assigned_to", dropdown_label="Assigned User", form_object_value=form.assigned_to %}
+                    {% with iterable_thing=assigned_to, dropdown_topic="assigned_to", dropdown_label="Assigned User", form_object_value=form.assigned_to, dropdown_topic_set="True" %}
                         {% include "subtemplates/_dropdown_list.html" %}
                     {%  endwith %}
-                    {% with iterable_thing=groups, dropdown_topic="group_access", dropdown_label="Group Access",form_object_value=form.data.group_acccess %}
-                        {% include "subtemplates/_dropdown_object.html" %}
+                    {% with iterable_thing=groups_access, dropdown_topic="group_access", dropdown_label="Group Access", form_object_value=form.data.group_acccess,  dropdown_topic_set="True" %}
+                        {% include "subtemplates/_dropdown_list.html" %}
                     {% endwith %}
                     <!--</div>-->
                     <div class="mdl-layout-spacer"></div>
