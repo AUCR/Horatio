@@ -6,10 +6,8 @@
         <div class="page-content">
                 <div class="mdl-grid">
             <span class="mdl-layout-title">Cases</span>
-{#            <div class="mdl-layout-spacer"></div>#}
-{#            {% with form_object="createbutton", button_icon="add", button_text="Create Case", button_value="createbuttonvalue" %}#}
-{#                {% include "subtemplates/_plain_button.html" %}#}
-{#            {% endwith %}#}
+            <div class="mdl-layout-spacer"></div>
+            <a href="{{  url_for('cases.create_case_route') }}">Create a new case</a>
         </div>
         <div class="mdl-layout-spacer"></div>
         {% with form_object="table",
