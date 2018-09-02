@@ -154,6 +154,10 @@ def edit_case_route():
                     case.assigned_to = int(request.form["assigned_to"])
                     case.group_access = int(request.form["group_access"])
                     db.session.commit()
+            else:
+                for error in form.errors:
+                    flash(str(form.errors[error][0]), 'error')
+                render_template('register.html', title=_('Register'), form=form)
         return cases_plugin_route()
     if request.method == "GET":
         if case:
