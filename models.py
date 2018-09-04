@@ -2,10 +2,11 @@
 # coding=utf-8
 import udatetime as datetime
 from app import db
+from app.plugins.auth.models import SearchableMixin
 from yaml_info.yamlinfo import YamlInfo
 
 
-class Cases(db.Model):
+class Cases(SearchableMixin, db.Model):
     """Case data default table for aucr."""
 
     __searchable__ = ['id', 'description', 'modify_time_stamp', 'detection_method', 'subject', 'case_notes',
@@ -26,7 +27,7 @@ class Cases(db.Model):
     case_status = db.Column(db.Integer, db.ForeignKey('task_states.id'))
 
     def __repr__(self):
-        return '<Cases {}>'.format(self.case_name)
+        return '<Cases {}>'.format(self.id)
 
     def to_dict(self):
         """Return dictionary object type for API calls."""

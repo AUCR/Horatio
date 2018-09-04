@@ -1,7 +1,7 @@
 # coding=utf-8
 import udatetime
 from app import db
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, g
 from flask_login import login_required, current_user
 from app.plugins.auth.models import Groups, Group, User
 from app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
@@ -16,13 +16,18 @@ from sqlalchemy import or_
 cases_page = Blueprint('cases', __name__, template_folder='templates')
 
 
-@cases_page.route('/cases', methods=['GET'])
+@cases_page.route('/search')
 @login_required
-def cases_plugin_route():
-    """the tasks function returns the plugin framework for the yara_plugin default task view"""
-    # TODO show current cases in the database
+def search():
+    """AUCR search plugin flask blueprint."""
+    if not g.search_form.validate():
+        return redirect(url_for('cases.cases'))
     page = request.args.get('page', 1, type=int)
-    case_list = Cases.query.all()
+    posts, total = Cases.search(g.search_form.q.data, page, int(current_app.config['POSTS_PER_PAGE']))
+    cases, total = Cases.search(g.search_form.q.data, page, int(current_app.config['POSTS_PER_PAGE']))
+    next_url = url_for('search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * int(current_app.config['POSTS_PER_PAGE']) else None
+    prev_url = url_for('search', q=g.search_form.q.data, page=page - 1) if page > 1 else None
     case_dict = {}
 
     # Current state choices
@@ -39,8 +44,9 @@ def cases_plugin_route():
             continue
         else:
             user_choices.append((user.id, user.username))
-
-    for item in case_list:
+    for posts in cases:
+        print(posts)
+    for item in cases:
         # Get the actual value of the status
         case_status_value = item.case_status
         for items in state_choices:
@@ -64,8 +70,64 @@ def cases_plugin_route():
                          "assigned_to": assigned_user_value}
 
             case_dict[str(item.id)] = item_dict
+    return render_template('cases.html', title='Case Search', page=page,
+                           table_dict=case_dict, search_url='cases.search')
 
-    return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_list, table_dict=case_dict)
+
+@cases_page.route('/cases', methods=['GET', 'POST'])
+@login_required
+def cases_plugin_route():
+    """the tasks function returns the plugin framework for the yara_plugin default task view"""
+    # TODO show current cases in the database
+    case_list = Cases.query.all()
+    case_dict = {}
+    page = request.args.get('page', 1, type=int)
+    # Current state choices
+    count = 0
+    state_choices = []
+    for state in TaskStates.query.all():
+        count += 1
+        state_choices.append((int(count), state.task_state_name))
+    # User choices
+    user_choices = []
+    for user in User.query.all():
+        # Just keep admin out of the list
+        if user.id == 1:
+            continue
+        else:
+            user_choices.append((user.id, user.username))
+    query_count = 0
+    total_count = page * 10 - 10
+    for item in case_list:
+        # Get the actual value of the status
+        case_status_value = item.case_status
+        for items in state_choices:
+            if items[0] == item.case_status:
+                case_status_value = items[1]
+        # Get the actual value of the detection
+        detection_method_value = item.detection_method
+        for items in AVAILABLE_CHOICES:
+            if items[0] == item.detection_method:
+                detection_method_value = items[1]
+        # Get the actual value of the assigned user
+        assigned_user_value = item.assigned_to
+        for items in user_choices:
+            if items[0] == item.assigned_to:
+                assigned_user_value = items[1]
+        group_access_value = Group.query.filter_by(username_id=current_user.id, groups_id=item.group_access).first()
+        if group_access_value:
+            if item.id >= total_count and query_count < 10 + total_count:
+                item_dict = {"id": item.id, "status": case_status_value,
+                             "subject": item.subject, "description": item.description,
+                             "detection": detection_method_value, "last_modified": item.modify_time_stamp,
+                             "assigned_to": assigned_user_value}
+
+                case_dict[str(item.id)] = item_dict
+        query_count += 1
+    prev_url = '?page=' + str(page - 1)
+    next_url = '?page=' + str(page + 1)
+    return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_list, table_dict=case_dict,
+                           search_url='cases.search', next_url=next_url, prev_url=prev_url)
 
 
 @cases_page.route('/create', methods=['GET', 'POST'])
@@ -75,6 +137,7 @@ def create_case_route():
     group_info = Groups.query.all()
     # User choices
     user_choices = []
+    page = request.args.get('page', 1, type=int)
     for user in User.query.all():
         # Just keep admin out of the list
         if user.id == 1:
@@ -106,10 +169,10 @@ def create_case_route():
             db.session.add(new_case)
             db.session.commit()
             flash("The case has been created.")
-            return redirect(url_for('cases.cases_plugin_route'))
+            return redirect(url_for('cases.cases_plugin_route', page=page))
     form = CreateCase(request.form)
     return render_template('create_case.html', title='Create Case', form=form, groups=group_info,
-                           detection_method=AVAILABLE_CHOICES, assigned_to=user_choices)
+                           detection_method=AVAILABLE_CHOICES, assigned_to=user_choices,  search_url='cases.search')
 
 
 @cases_page.route('/edit', methods=['GET', 'POST'])
@@ -192,7 +255,8 @@ def edit_case_route():
                               "assigned_to": assigned_user_value, "group_access": assigned_group_value}
                 return render_template('edit_case.html', title='Edit Case', form=form, groups=group_info,
                                        detection_method=AVAILABLE_CHOICES, case_status=state_choices,
-                                       assigned_to=user_choices, table_dict=table_dict, groups_access=group_choices)
+                                       assigned_to=user_choices, table_dict=table_dict, groups_access=group_choices,
+                                       search_url='cases.search')
             return cases_plugin_route()
         else:
             return cases_plugin_route()
