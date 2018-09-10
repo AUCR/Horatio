@@ -1,5 +1,7 @@
 # coding=utf-8
 import udatetime
+import os
+import logging
 from app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, g
 from flask_login import login_required, current_user
@@ -11,9 +13,16 @@ from app.plugins.tasks.models import TaskStates
 from app.plugins.analysis.routes import get_upload_file_hash
 from app.plugins.analysis.file.upload import allowed_file
 from werkzeug.utils import secure_filename
+from multiprocessing import Process
 from sqlalchemy import or_
+from app.plugins.tasks.mq import index_mq_aucr_task, get_mq_yaml_configs, index_mq_aucr_report
 
 cases_page = Blueprint('cases', __name__, template_folder='templates')
+
+
+def process_case(case_id):
+    """MQ Process file."""
+    index_mq_aucr_task(rabbit_mq_server=current_app.config['RABBITMQ_SERVER'], task_name=case_id, routing_key="cases")
 
 
 @cases_page.route('/search')
@@ -208,6 +217,16 @@ def edit_case_route():
             form = EditCase(request.form)
             if form.validate_on_submit():
                 if case is not None:
+                    rabbit_mq_server_ip = current_app.config['RABBITMQ_SERVER']
+                    mq_config_dict = get_mq_yaml_configs()
+                    files_config_dict = mq_config_dict["reports"]
+                    for item in files_config_dict:
+                        if "cases" in item:
+                            logging.info("Adding a new case to the cases MQ" + " " + str(item["cases"][0]) + " to MQ")
+                            index_mq_aucr_report(str(case.id), str(rabbit_mq_server_ip), item["cases"][0])
+                    case_data = str(case.id)
+                    p = Process(target=process_case, args=(case_data,))
+                    p.start()
                     case.subject = request.form["subject"]
                     case.description = request.form["description"]
                     case.case_notes = request.form["case_notes"]
@@ -215,12 +234,11 @@ def edit_case_route():
                     case.detection_method = int(request.form["detection_method"])
                     case.case_status = int(request.form["case_status"])
                     case.assigned_to = int(request.form["assigned_to"])
-                    case.group_access = int(request.form["group_access"])
+                    case.group_access = int(request.form["groups_access"])
                     db.session.commit()
             else:
                 for error in form.errors:
                     flash(str(form.errors[error][0]), 'error')
-                render_template('register.html', title=_('Register'), form=form)
         return cases_plugin_route()
     if request.method == "GET":
         if case:
@@ -245,7 +263,7 @@ def edit_case_route():
                 for items in user_choices:
                     if items[0] == case.assigned_to:
                         assigned_user_value = items[1]
-                assigned_group_value = None
+                assigned_group_value = case.group_access
                 for items in group_choices:
                     if items[0] == case.group_access:
                         assigned_group_value = items[1]

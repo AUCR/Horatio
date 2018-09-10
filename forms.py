@@ -11,13 +11,13 @@ class CreateCase(FlaskForm):
     """Crease Case Form."""
 
     subject = TextAreaField(_l('Subject'), validators=[Length(min=0, max=256)])
-    description = TextAreaField(_l('Description'), validators=[Length(min=0, max=256)])
-    case_notes = TextAreaField(_l('Case Notes'), validators=[Length(min=0, max=4912)])
+    description = TextAreaField('Description', validators=[Length(min=0, max=256)])
+    case_notes = TextAreaField('Case Notes', validators=[Length(min=0, max=4912)])
     current_state = SelectMultipleField('Status', choices=AVAILABLE_CHOICES)
     detection_method = SelectMultipleField('Detection Method', choices=AVAILABLE_CHOICES)
-    group_access = SelectMultipleField(_l('Group Access'), choices=AVAILABLE_CHOICES)
-    assigned_to = SelectMultipleField(_l('Assigned To'), choices=AVAILABLE_CHOICES)
-    submit = SubmitField(_l('Create'))
+    group_access = SelectMultipleField('Group Access', choices=AVAILABLE_CHOICES)
+    assigned_to = SelectMultipleField('Assigned To', choices=AVAILABLE_CHOICES)
+    submit = SubmitField('Create')
 
 
 class EditCase(FlaskForm):
