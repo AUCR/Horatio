@@ -2,10 +2,10 @@
 # coding=utf-8
 import os
 from flask import jsonify, g
-from app.plugins.Horatio.models import Cases
-from app.plugins.api.auth import token_auth
-from app.plugins.api.routes import api_page
-from app.plugins.auth.models import Group
+from aucr_app.plugins.Horatio.models import Cases
+from aucr_app.plugins.api.auth import token_auth
+from aucr_app.plugins.api.routes import api_page
+from aucr_app.plugins.auth.models import Group
 
 
 @api_page.route('/case_info/<int:_id>', methods=['GET'])

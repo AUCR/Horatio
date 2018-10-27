@@ -1,7 +1,7 @@
 """AUCR Horatio IR Case Management System plugin framework."""
 # coding=utf-8
-from app.plugins.Horatio.routes import cases_page
-from app.plugins.Horatio.api.case import api_page as cases_api
+from aucr_app.plugins.Horatio.routes import cases_page
+from aucr_app.plugins.Horatio.api.case import api_page as cases_api
 
 
 def load(app):

@@ -1,8 +1,8 @@
 """db.py is the cases plugin database library for all task plugins to use"""
 # coding=utf-8
 import udatetime as datetime
-from app import db
-from app.plugins.auth.models import SearchableMixin
+from aucr_app import db
+from aucr_app.plugins.auth.models import SearchableMixin
 from yaml_info.yamlinfo import YamlInfo
 
 
@@ -23,7 +23,7 @@ class Cases(SearchableMixin, db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'))
     group_access = db.Column(db.Integer, db.ForeignKey('groups.id'))
-    attached_files = db.Column(db.String(128), db.ForeignKey('uploaded_file_table.file_hash'))
+    attached_files = db.Column(db.String(128), db.ForeignKey('uploaded_file_table.md5_hash'))
     case_status = db.Column(db.Integer, db.ForeignKey('task_states.id'))
 
     def __repr__(self):
@@ -64,7 +64,7 @@ class Detection(db.Model):
 
 def insert_initial_detection_values(*args, **kwargs):
     """Insert Task category default database values from a yaml template file."""
-    detection_run = YamlInfo("app/plugins/Horatio/detection_methods.yml", "none", "none")
+    detection_run = YamlInfo("aucr_app/plugins/Horatio/detection_methods.yml", "none", "none")
     detection_data = detection_run.get()
     for items in detection_data:
         new_detection_table_row = Detection(detection_method=items)

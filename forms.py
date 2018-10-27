@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import SubmitField, TextAreaField, SelectMultipleField, IntegerField, StringField
 from wtforms.validators import Length
 from flask_babel import lazy_gettext as _l
-from app.plugins.Horatio.globals import AVAILABLE_CHOICES
+from aucr_app.plugins.Horatio.globals import AVAILABLE_CHOICES
 
 
 class CreateCase(FlaskForm):

@@ -2,20 +2,20 @@
 import udatetime
 import os
 import logging
-from app import db
+from aucr_app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, g
 from flask_login import login_required, current_user
-from app.plugins.auth.models import Groups, Group, User
-from app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
-from app.plugins.Horatio.globals import AVAILABLE_CHOICES
-from app.plugins.Horatio.models import Cases, Detection
-from app.plugins.tasks.models import TaskStates
-from app.plugins.analysis.routes import get_upload_file_hash
-from app.plugins.analysis.file.upload import allowed_file
+from aucr_app.plugins.auth.models import Groups, Group, User
+from aucr_app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
+from aucr_app.plugins.Horatio.globals import AVAILABLE_CHOICES
+from aucr_app.plugins.Horatio.models import Cases, Detection
+from aucr_app.plugins.tasks.models import TaskStates
+from aucr_app.plugins.analysis.routes import get_upload_file_hash
+from aucr_app.plugins.analysis.file.upload import allowed_file
 from werkzeug.utils import secure_filename
 from multiprocessing import Process
 from sqlalchemy import or_
-from app.plugins.tasks.mq import index_mq_aucr_task, get_mq_yaml_configs, index_mq_aucr_report
+from aucr_app.plugins.tasks.mq import index_mq_aucr_task, get_mq_yaml_configs, index_mq_aucr_report
 
 cases_page = Blueprint('cases', __name__, template_folder='templates')
 
