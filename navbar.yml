@@ -1,0 +1,8 @@
+main:
+  user: [
+    link: [
+        page: 'cases.cases_plugin_route',
+        icon: 'ballot',
+        title: 'Cases'
+        ]
+    ]
