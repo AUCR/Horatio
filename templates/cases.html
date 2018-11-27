@@ -7,8 +7,13 @@
                 <div class="mdl-grid">
             <span class="mdl-layout-title">Cases</span>
             <div class="mdl-layout-spacer"></div>
-            <a href="{{  url_for('cases.create_case_route') }}">Create a new case</a>
-        </div>
+            <form class="form" method="post" role="form">
+                    {{ form.hidden_tag() }}
+                    <!--</div>-->
+            {% with form_object="uploadbutton", button_text="", button_icon="add", button_value="uploadnewfilebutton" %}
+                {% include "subtemplates/_plain_button.html" %}
+            {% endwith %}
+            </form>        </div>
         <div class="mdl-layout-spacer"></div>
         {% with form_object="table",
                 table_list=["Delete", "Merge"],

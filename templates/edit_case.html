@@ -35,7 +35,7 @@
                     {% with iterable_thing=assigned_to, dropdown_topic="assigned_to", dropdown_label="Assigned User", form_object_value=form.assigned_to, dropdown_topic_set="True" %}
                         {% include "subtemplates/_dropdown_list.html" %}
                     {%  endwith %}
-                    {% with iterable_thing=groups_access, dropdown_topic="groups_access", dropdown_label="Group Access", form_object_value=form.data.group_acccess,  dropdown_topic_set="True" %}
+                    {% with iterable_thing=groups_access, dropdown_topic="groups_access", dropdown_label="Group Access", form_object_value=form.group_access,  dropdown_topic_set="True" %}
                         {% include "subtemplates/_dropdown_list.html" %}
                     {% endwith %}
                     <!--</div>-->

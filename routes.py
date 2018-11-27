@@ -1,14 +1,13 @@
 # coding=utf-8
 import udatetime
-import os
 import logging
 from aucr_app import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, g
 from flask_login import login_required, current_user
 from aucr_app.plugins.auth.models import Groups, Group, User
-from aucr_app.plugins.Horatio.forms import CreateCase, EditCase, SaveCase
+from aucr_app.plugins.Horatio.forms import CreateCase, EditCase, Horatio
 from aucr_app.plugins.Horatio.globals import AVAILABLE_CHOICES
-from aucr_app.plugins.Horatio.models import Cases, Detection
+from aucr_app.plugins.Horatio.models import Cases
 from aucr_app.plugins.tasks.models import TaskStates
 from aucr_app.plugins.analysis.routes import get_upload_file_hash
 from aucr_app.plugins.analysis.file.upload import allowed_file
@@ -38,7 +37,6 @@ def search():
         if total > page * int(current_app.config['POSTS_PER_PAGE']) else None
     prev_url = url_for('search', q=g.search_form.q.data, page=page - 1) if page > 1 else None
     case_dict = {}
-
     # Current state choices
     count = 0
     state_choices = []
@@ -88,8 +86,10 @@ def search():
 def cases_plugin_route():
     """the tasks function returns the plugin framework for the yara_plugin default task view"""
     # TODO show current cases in the database
-    case_list = Cases.query.all()
+    if request.method == 'POST':
+        return redirect("cases/create")
     case_dict = {}
+    form = Horatio(request.form)
     page = request.args.get('page', 1, type=int)
     # Current state choices
     count = 0
@@ -105,38 +105,39 @@ def cases_plugin_route():
             continue
         else:
             user_choices.append((user.id, user.username))
-    query_count = 0
-    total_count = page * 10 - 10
-    for item in case_list:
-        # Get the actual value of the status
-        case_status_value = item.case_status
-        for items in state_choices:
-            if items[0] == item.case_status:
-                case_status_value = items[1]
-        # Get the actual value of the detection
-        detection_method_value = item.detection_method
-        for items in AVAILABLE_CHOICES:
-            if items[0] == item.detection_method:
-                detection_method_value = items[1]
-        # Get the actual value of the assigned user
-        assigned_user_value = item.assigned_to
-        for items in user_choices:
-            if items[0] == item.assigned_to:
-                assigned_user_value = items[1]
-        group_access_value = Group.query.filter_by(username_id=current_user.id, groups_id=item.group_access).first()
-        if group_access_value:
-            if item.id >= total_count and query_count < 10 + total_count:
-                item_dict = {"id": item.id, "status": case_status_value,
-                             "subject": item.subject, "description": item.description,
-                             "detection": detection_method_value, "last_modified": item.modify_time_stamp,
-                             "assigned_to": assigned_user_value}
-
-                case_dict[str(item.id)] = item_dict
-        query_count += 1
+    count = page * 10
+    total = 0
+    while total < 10:
+        total += 1
+        id_item = count - 10 + total
+        item = Cases.query.filter_by(id=id_item).first()
+        if item:
+            group_ids = Group.query.filter_by(username_id=current_user.id).all()
+            for group_items in group_ids:
+                if item.group_access == group_items.groups_id:
+                    case_status_value = item.case_status
+                    for items in state_choices:
+                        if items[0] == item.case_status:
+                            case_status_value = items[1]
+                    # Get the actual value of the detection
+                    detection_method_value = item.detection_method
+                    for items in AVAILABLE_CHOICES:
+                        if items[0] == item.detection_method:
+                            detection_method_value = items[1]
+                    # Get the actual value of the assigned user
+                    assigned_user_value = item.assigned_to
+                    for items in user_choices:
+                        if items[0] == item.assigned_to:
+                            assigned_user_value = items[1]
+                    item_dict = {"id": item.id, "status": case_status_value,
+                                 "subject": item.subject, "description": item.description,
+                                 "detection": detection_method_value, "last_modified": item.modify_time_stamp,
+                                 "assigned_to": assigned_user_value}
+                    case_dict[str(item.id)] = item_dict
     prev_url = '?page=' + str(page - 1)
     next_url = '?page=' + str(page + 1)
-    return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_list, table_dict=case_dict,
-                           search_url='cases.search', next_url=next_url, prev_url=prev_url)
+    return render_template('cases.html', title='Cases Plugin', page=page, case_list=case_dict, table_dict=case_dict,
+                           search_url='cases.search', next_url=next_url, prev_url=prev_url , form=form)
 
 
 @cases_page.route('/create', methods=['GET', 'POST'])

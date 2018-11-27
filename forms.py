@@ -1,10 +1,16 @@
 """AUCR case plugin default page forms."""
 # coding=utf-8
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, TextAreaField, SelectMultipleField, IntegerField, StringField
+from wtforms import SubmitField, TextAreaField, SelectMultipleField, IntegerField
 from wtforms.validators import Length
 from flask_babel import lazy_gettext as _l
 from aucr_app.plugins.Horatio.globals import AVAILABLE_CHOICES
+
+
+class Horatio(FlaskForm):
+    """New Case Form."""
+
+    createnewcase = SubmitField(_l("Create New Case"))
 
 
 class CreateCase(FlaskForm):
