@@ -2,8 +2,8 @@
 # coding=utf-8
 import udatetime as datetime
 from aucr_app import db
-from aucr_app.plugins.auth.models import SearchableMixin
 from yaml_info.yamlinfo import YamlInfo
+from aucr_app.plugins.auth.models import SearchableMixin
 
 
 class Cases(SearchableMixin, db.Model):
@@ -23,7 +23,7 @@ class Cases(SearchableMixin, db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'))
     group_access = db.Column(db.Integer, db.ForeignKey('groups.id'))
-    attached_files = db.Column(db.String(128), db.ForeignKey('uploaded_file_table.md5_hash'))
+    md5_hash = db.Column(db.String(32), db.ForeignKey('uploaded_file_table.md5_hash'))
     case_status = db.Column(db.Integer, db.ForeignKey('task_states.id'))
 
     def __repr__(self):
@@ -43,7 +43,7 @@ class Cases(SearchableMixin, db.Model):
             'created_by': self.created_by,
             'assigned_to': self.assigned_to,
             'group_access': self.group_access,
-            'attached_files': self.attached_files,
+            'md5_hash': self.md5_hash,
             'case_status': self.case_status
         }
         return data

@@ -175,7 +175,7 @@ def create_case_route():
                              created_by=current_user.id, case_status=4,
                              detection_method=detection_method_selection[1], group_access=form.group_access.data[0],
                              created_time_stamp=udatetime.utcnow(), modify_time_stamp=udatetime.utcnow(),
-                             attached_files=file_hash, assigned_to=form.assigned_to.data[0])
+                             md5_hash=file_hash, assigned_to=form.assigned_to.data[0])
             db.session.add(new_case)
             db.session.commit()
             flash("The case has been created.")
