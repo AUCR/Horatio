@@ -87,7 +87,7 @@ def cases_plugin_route():
     """the tasks function returns the plugin framework for the yara_plugin default task view"""
     # TODO show current cases in the database
     if request.method == 'POST':
-        return redirect("cases/create")
+        return redirect("/cases/create")
     case_dict = {}
     form = Horatio(request.form)
     page = request.args.get('page', 1, type=int)
